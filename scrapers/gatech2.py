@@ -9,7 +9,7 @@ def createSession(subject): #pass in subject string
     url = "https://oscar.gatech.edu/bprod/bwckctlg.p_disp_cat_term_date"
     data = {
         "call_proc_in": "bwckctlg.p_disp_dyn_ctlg",
-        "cat_term_in": "202102"
+        "cat_term_in": "202008"
         }
     r = s.post(url,  headers=headers, data=data)
 
@@ -33,7 +33,7 @@ def createSession(subject): #pass in subject string
         "sel_divs": "dummy",
         "sel_dept": "dummy",
         "sel_attr": "dummy",
-        "sel_subj": subject,
+        "sel_subj": "AE",
         "sel_crse_strt":"", 
         "sel_crse_end": "",
         "sel_title": "",
@@ -41,8 +41,10 @@ def createSession(subject): #pass in subject string
         "sel_to_cred": ""
         }
     datas2 =    "term_in=202008&call_proc_in=bwckctlg.p_disp_dyn_ctlg&sel_subj=dummy&sel_levl=dummy&sel_schd=dummy&sel_coll=dummy&sel_divs=dummy&sel_dept=dummy&sel_attr=dummy&sel_subj=AE&sel_crse_strt=&sel_crse_end=&sel_title=&sel_levl=%25&sel_schd=%25&sel_coll= %25&sel_divs=%25&sel_dept=%25&sel_from_cred=&sel_to_cred=&sel_attr=%25"
+    
+    data3 = "term_in=202008&call_proc_in=bwckctlg.p_disp_dyn_ctlg&sel_subj=dummy&sel_levl=dummy&sel_schd=dummy&sel_coll=dummy&sel_divs=dummy&sel_dept=dummy&sel_attr=dummy&sel_subj=AE&sel_crse_strt=&sel_crse_end=&sel_title=&sel_levl=%25&sel_schd=%25&sel_coll=%25&sel_divs=%25&sel_dept=%25&sel_from_cred=&sel_to_cred=&sel_attr=%25"
 
-    r = s.post(url, headers=headers, data=datas2)
+    r = s.post(url, headers=headers, data=data3)
     print(r.text)
 
 
@@ -89,7 +91,8 @@ def initScript():
     
     
 if __name__ == "__main__":
-    initScript()
+    createSession("AE")
+    #initScript()
 
 
 
