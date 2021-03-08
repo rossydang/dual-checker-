@@ -2,7 +2,7 @@
 import shelve
 import requests
 import bs4
-url = "https://www.gafutures.org/checs/DECourseDirectory/_DumpDataTable/?1607338557924&academic_yearinit=2021&partcollege_opeid=005601&categoryinit="
+#url = "https://www.gafutures.org/checs/DECourseDirectory/_DumpDataTable/?1607338557924&academic_yearinit=2021&partcollege_opeid=005601&categoryinit="
 
 
 
@@ -12,12 +12,16 @@ url = "https://www.gafutures.org/checs/DECourseDirectory/_DumpDataTable/?1607338
 class Course:
     
     
-    def __init__(self, title, name, ID, academy):
+    def __init__(self, title, ID, name, ps_course, academy=None):
         self.title = title #IE ECON 1010
         self.name = name #
         self.ID = ID
         self.academy = academy
-
+        self.ps_course = ps_course #whitespace is removed here to make things... slightly easier? 
+        
+        self.ap_credit = {
+            #list of minimum AP scores to get credit
+            }
              
         
 
@@ -29,14 +33,15 @@ class College:
         self.college_name = name
         self.ID = ID
         self.url = url
+        self.getCourses()
        
    
         
     def getCourses(self):
 
-        data = {"academic_yearinit" : "2021" , "partcollege_opeid": "001574" } #TODO don't hard code this in 
+        #data = {"academic_yearinit" : "2021" , "partcollege_opeid": "001574" } #TODO don't hard code this in 
         
-        text = requests.get(url).text
+        text = requests.get(self.url).text
         courses = bs4.BeautifulSoup(text, 'html.parser')
         #TODO debug this for all colleges
         table = courses.find("table")
@@ -50,28 +55,35 @@ class College:
         
         for course in rows:
             
-           # print (course.contents[1]) #CTAE place
-           # print  (course.contents[3]) #ID number
-           # print  (course.contents[5]) #title
-            print(course)
-            course_Store = Course(course.contents[5].get_text(), course.contents[3].get_text(), course.contents[1].get_text()) #TODO check if this works for every course in ga 
-            
+            #print (course.contents[1]) #CTAE place
+            #print  (course.contents[3]) #ID number
+            #print  (course.contents[5]) #title
+            #print(course)
+            #print(course.contents[7]) #PS course title - name in college 
+            #there's a better method that fully remove all whitespace, but this should work for now 
+            course_Store = Course(course.contents[5].get_text(), str( course.contents[3].get_text()), course.contents[1].get_text(), course.contents[7].get_text()) #TODO check if this works for every course in ga 
             coursesList.append(course_Store)
             
-            self.storeCourses(coursesList)
+        self.storeCourses(coursesList)
         
         
         
-    def storeCourses(self, courses):
+    def storeCourses(self, coursesList):
         #ID will be main key in storing courses
-        savedCourses = shelve.open(self.college_name)
+        with shelve.open(self.college_name) as savedCourses:
         
-        for course in courses:
-            if course.ID in savedCourses:
-                pass
+            for course in coursesList:
+                if course.ID in savedCourses:
+                    pass
             
-            else:
-                #create entry 
+                else:
+                    savedCourses[ course.ID ] = course
+                    
+            
+                    
+                    #create entry 
+                    
+            #print( list(savedCourses.keys()))
                 
         #BIG TODO figure out how to handle when the course directory deletes a course
                 
@@ -79,7 +91,7 @@ class College:
 
 def initalize():
     KSU = ""
-    GGC = ""
+    GGC = "https://www.gafutures.org/checs/DECourseDirectory/_DumpDataTable/?1612967601471&academic_yearinit=2021&partcollege_opeid=041429&categoryinit="
     GaTech = ""
     
 
@@ -88,7 +100,8 @@ def initalize():
 
         
 if __name__ == "__main__":
-    c = College("DSD", "sadsa" ,url)
+    GGC = "https://www.gafutures.org/checs/DECourseDirectory/_DumpDataTable/?1612967601471&academic_yearinit=2021&partcollege_opeid=041429&categoryinit="
+    c = College("Georgia_Gwinnett_college", "sadsa" ,GGC)
     c.getCourses()
         
         
