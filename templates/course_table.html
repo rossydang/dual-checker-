@@ -2,19 +2,50 @@
   <head>
     <title></title>
     <meta content="">
-    <style></style>
+    <style>
+       th  { 
+                width:150px; 
+                text-align:center; 
+          
+                padding:5px 
+              
+            } 
+
+    </style>
   </head>
   <body>
-  <h1> ADSD</h1>
+    <!--Get data from previous page and display it here -->
+  <h1> Available Courses for {{ college }}</h1>
+
+  <h3> Selected Courses </h3>
   <table>
+    <!-- add selected courses in ajax request-->
+      {}
+  </table>
+  
+<form action= "/courses" method="post">
+  <input type="submit" name="courses" value="Courses_List"> 
+  <input type="submit" name="majors"   value="Major_Pathway">  
+  <input type="submit" name="schedule" value="College_Course_Schedule">  
+</form>
+
+
+<table>
+  <tr>
+    <th>Course Name </th>
+    <th>Course ID</th>
+    <th> AP Course Equivalent</th>
+    <th> Next Semester Availibility </th>
+    <th> Prerequisites </th>
+    <th> Course Transferability </th>
+    <th> Add Course to Take</th>
+  </tr>
 {% for item in items %}
 <TR>
    <TD class="c2">{{item.name}}</TD>
    <TD class="c3">{{item.ID}}</TD>
-   <TD> AP Credit Obtained? </TD>
-   <TD> Equivalent college course </TD>
-   <TD> Avalible Next Semester? </TD>
-   
+    <!-- <TD> Equivalent college course </TD> -->
+    
 </TR>
 {% endfor %}
 </table>

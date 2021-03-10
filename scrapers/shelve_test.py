@@ -5,7 +5,7 @@ import shelve
 
 x = shelve.open("Georgia_Gwinnett_college")
 
-p = x["46.0A924"]
+for key in x:
+    print(x[key].ps_course)
 
-print (p.title)
 x.close()

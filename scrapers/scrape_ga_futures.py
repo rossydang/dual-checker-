@@ -62,6 +62,8 @@ class College:
             #print(course.contents[7]) #PS course title - name in college 
             #there's a better method that fully remove all whitespace, but this should work for now 
             course_Store = Course(course.contents[5].get_text(), str( course.contents[3].get_text()), course.contents[1].get_text(), course.contents[7].get_text()) #TODO check if this works for every course in ga 
+            
+            print(course.contents[7].get_text())
             coursesList.append(course_Store)
             
         self.storeCourses(coursesList)
