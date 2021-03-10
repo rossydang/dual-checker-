@@ -8,19 +8,50 @@
 <!-- AP classes below change to url for later-->
 <form method="POST" action= "/"> 
     <label>AP Biology:</label> 
-    <input type="number" name="AP Biology" min="0" max="5" value= "0" >  <br>
+    <input type="number" name="Bio" min="0" max="5" value= "0" >  <br>
     <label>AP Physics 1:</label>
     <input type="number" name="AP Physics 1" min="0" max="5" value= "0">  <br>
     <label>AP Physics C Mechanics:</label>
-    <input type="number" name="AP Physics 1" min="0" max="5" value= "0"> <br>
+    <input type="number" name="AP Physics C Mechanics" min="0" max="5" value= "0"> <br>
     <label>AP Physics C E&M:</label>
-    <input type="number" name="AP Physics 1" min="0" max="5" value= "0" > <br>
+    <input type="number" name="AP Physics C E&M" min="0" max="5" value= "0" > <br>
     <label>AP Computer Science A:</label>
-    <input type="number" name="AP Physics 1" min="0" max="5" value= "0"> <br>
+    <input type="number" name="CSA" min="0" max="5" value= "0"> <br>
+    <label>Calculus BC:</label>
+    <input type="number" name="MATH BC" min="0" max="5" value= "0"> <br>
+    <label>Calculus AB:</label>
+    <input type="number" name="MATH AB" min="0" max="5" value= "0"> <br>
+    <label>Human Geography</label>
+    <input type="number" name="HUG" min="0" max="5" value= "0"> <br>
 
 
-<!-- Process input and continue on --> 
-<input type="submit" value="Continue" onclick="cont()"> 
+<!-- Process input and continue on -->
+<br> <br>
+ <h2>Enter the college you plan to dual enroll at </h2>
+<select name="college"> 
+    <option value="Georgia Tech">Georgia Tech </option>
+    <option value="Kennesaw State"> Kennesaw State </option>
+    <option value="University of Georgia">  University of Georgia </option>
+    <option value="Georgia Gwinnett College">Georgia Gwinnett College  </option>
+    
+    <br> <br>
+
+
+<br> <br>
+</select>
+
+<h3> Enter the college you plan to enter after graduating</h3>
+<select name="transfer_college"> 
+    <option value="Georgia Tech"name ="college" >Georgia Tech </option>
+    <option value="Kennesaw State"  name= "college" > Kennesaw State </option>
+    <option value="University of Georgia">  University of Georgia </option>
+    <option value="Georgia Gwinnett College">Georgia Gwinnett College  </option>
+    
+    <br> <br>
+</select>
+
+<input type="submit" value="Continue"> 
+
 </form>
 <!-- Scroll down for other examination tests -->
 
