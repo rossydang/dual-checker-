@@ -1,54 +1,141 @@
 <html>
-  <head>
-    <title></title>
-    <meta content="">
-    <style>
-       th  { 
-                width:150px; 
-                text-align:center; 
-          
-                padding:5px 
-              
-            } 
-
-    </style>
-  </head>
-  <body>
-    <!--Get data from previous page and display it here -->
+<head>
+  
+  
+  <title></title>
+  <meta content="">
+  <style>
+    table {
+      border-collapse: collapse;
+    }
+    
+    th { 
+      width:150px; 
+      text-align:center; 
+      
+      padding:5px 
+      
+    } 
+    
+    tr { 
+      border: 2px solid black;
+    }
+    
+    .highlighted {
+      background-color: "#68ff00";
+    }
+  </style>
+</head>
+<body>
+  <!--Get data from previous page and display it here -->
   <h1> Available Courses for {{ college }}</h1>
-
+  <input type="checkbox" id="isAgeSelected">
+  
+  <div id="txtAge" style="display:none">Age is something</div>
   <h3> Selected Courses </h3>
-  <table>
-    <!-- add selected courses in ajax request-->
-      {}
+  
+  <table id="coursestaken">
+    <tbody>
+      <!-- the table breaks if I remove this table tow... -->
+      <tr> <th> Courses Taken </th> </tr>
+      
+      <!-- add selected courses in ajax request-->
+    </tbody>
+    
   </table>
   
-<form action= "/courses" method="post">
-  <input type="submit" name="courses" value="Courses_List"> 
-  <input type="submit" name="majors"   value="Major_Pathway">  
-  <input type="submit" name="schedule" value="College_Course_Schedule">  
-</form>
-
-
-<table>
-  <tr>
-    <th>Course Name </th>
-    <th>Course ID</th>
-    <th> AP Course Equivalent</th>
-    <th> Next Semester Availibility </th>
-    <th> Prerequisites </th>
-    <th> Course Transferability </th>
-    <th> Add Course to Take</th>
-  </tr>
-{% for item in items %}
-<TR>
-   <TD class="c2">{{item.name}}</TD>
-   <TD class="c3">{{item.ID}}</TD>
-    <!-- <TD> Equivalent college course </TD> -->
-    
-</TR>
-{% endfor %}
-</table>
+  <form action= "/courses" method="post">
+    <input type="submit" name="courses" value="Courses_List"> 
+    <input type="submit" name="majors"   value="Major_Pathway">  
+    <input type="submit" name="schedule" value="College_Course_Schedule">  
+  </form>
   
-  </body>
-</html>
+  
+  <table>
+    <tr>
+      <th>Course Name </th>
+      <th>Course ID</th>
+      <th> AP Course Equivalent</th>
+      <th> Next Semester Availibility </th>
+      <th> Prerequisites </th>
+      <th> Course Transferability </th>
+      <th> Add Course to Take</th>
+    </tr>
+    {% for item in items %}
+    <tr>
+      <TD class="c2">{{item.ps_course}}</TD>
+      <TD>  {{ item.college_course_name}} </TD>
+      <TD class="c3">{{item.ID}}</TD>
+      <TD> {{item.AP_equals}} </TD> 
+      <TD class="classpreqs"> {{item.dual_course_prereq }} </TD>
+      <TD>   {{item.course_equal}}   </TD>
+      <TD><input  id="{{item.checkboxID}}" type="checkbox"  name="class_taken" Take Class></TD>
+      <!-- <TD> Equivalent college course </TD> -->
+      
+    </tr>
+    {% endfor %}
+  </table>
+  
+</body>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"> </script>
+
+<script>
+  var courses_stack = [];
+  
+  function get_other_cells (cell_entry) {
+    var current_row = $(cell_entry).closest('tr');
+    var td_name = $(current_row).find('td:first-child').text();
+    //alert(td_name);
+    return td_name;
+  };
+  
+  ///set textcolor of all mentions of course if taking course
+  function update_name_texts(course_name) {
+    $('body').html(function(content) {
+      return content.replace(course_name, 'replacement');
+    });
+  };
+  
+  
+  
+  //TODO make this more efficient than just recreating the table
+  function update_takecourses_table() {
+    $('#coursestaken').find("tr:gt(0)").empty();
+    for (course_name in courses_stack) {
+      $('#coursestaken tr:last').after(  "<tr> <td>" + courses_stack[course_name] + "</td> <tr/>")};
+        update_name_texts(courses_stack[course_name] );
+      }
+      
+      
+      
+      
+      
+      
+      $(document).ready(function()  {
+        $(":checkbox").change(function() {
+          if(this.checked) {
+            courses_stack.push(get_other_cells(this));
+            console.log(courses_stack);
+            update_takecourses_table();
+          }
+          else {
+            //why is removing an item from an array so painful?
+            var index = courses_stack.indexOf(get_other_cells(this)); 
+            if (index > -1) {
+              courses_stack.splice(index, 1);
+              console.log(courses_stack);
+              update_takecourses_table();
+            };
+          };
+        });
+      });
+      
+      
+      
+      
+    </script>
+    
+    </html>
+    

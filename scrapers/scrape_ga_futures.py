@@ -12,11 +12,12 @@ import bs4
 class Course:
     
     
-    def __init__(self, title, ID, name, ps_course, academy=None):
+    def __init__(self, title, ID, name, ps_course, college_course_name, academy=None):
         self.title = title #IE ECON 1010
         self.name = name #
         self.ID = ID
         self.academy = academy
+        self. college_course_name = college_course_name
         self.ps_course = ps_course #whitespace is removed here to make things... slightly easier? 
         
         self.ap_credit = {
@@ -58,12 +59,13 @@ class College:
             #print (course.contents[1]) #CTAE place
             #print  (course.contents[3]) #ID number
             #print  (course.contents[5]) #title
+            print  (course.contents[9]) # college course name
             #print(course)
             #print(course.contents[7]) #PS course title - name in college 
             #there's a better method that fully remove all whitespace, but this should work for now 
-            course_Store = Course(course.contents[5].get_text(), str( course.contents[3].get_text()), course.contents[1].get_text(), course.contents[7].get_text()) #TODO check if this works for every course in ga 
+            course_Store = Course(course.contents[5].get_text(), str( course.contents[3].get_text()), course.contents[1].get_text(), course.contents[7].get_text(), course.contents[9].get_text()) #TODO check if this works for every course in ga 
             
-            print(course.contents[7].get_text())
+            #print(course.contents[4])
             coursesList.append(course_Store)
             
         self.storeCourses(coursesList)

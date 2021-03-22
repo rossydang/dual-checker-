@@ -34,7 +34,7 @@ def start():
     #ask for ap classes 
     if request.method == 'POST': #store session data
         parseStart(request.form)
-        AP_credit()
+        session["course_id"] = 0 #internally used to keep track of checkboxes
         return flask.redirect("courses") #consider using the name thing 
     return render_template("start.html")
 #optionally ask for major
@@ -60,11 +60,16 @@ def AP_credit():
             t =(  "%" + str(test) + "%" , ) #double the protection
             x = cur.execute("SELECT name, AP_equivalency FROM courses WHERE AP_equivalency LIKE ?", t)
             for row in x:
+                #each row is a tuple of (credit, AP TEST - SCORE). credits can repeat multiple times
+                #course_credits_granted.append(row)
 
-                print(row)
+                #I changed this to only include the credit 
+                course_credits_granted.append(row[0])
 
             
     #get course credit
+    course_con.close()
+    return course_credits_granted
 
 
 def parseCourses(data):
@@ -91,10 +96,12 @@ def parseCourses(data):
 @app.route('/courses', methods=["POST", "GET"])
 def list_courses():
     selected_college = session["college"]
+    transferring = session["transfer_college"]
     template = "course_table.html" #default
+   
     if request.method == "POST":
         template = parseCourses(request.values)
-        render_template(template, college =selected_college, items=getCourses(selected_college) )
+        render_template(template, college =selected_college, items=getCourses(selected_college, transferring) )
 
     courses_list = []
     #college_selected = avalible_courses[request.form.get("college")] 
@@ -103,22 +110,87 @@ def list_courses():
 
 
 
-    return render_template("course_table.html", college= selected_college, items=getCourses(selected_college))
+    return render_template("course_table.html", college= selected_college, items=getCourses(selected_college, transferring))
 
 
-def getCourses(college): #replace this using each name as an identifer
+def getCourses(college, transferring): #replace this using each name as an identifer
     #returns a dict of all classes EX:
     courses_list = []
     if college == "Georgia Gwinnett College":
         d = shelve.open("scrapers/Georgia_Gwinnett_college")
         for course_entry in d:
-            courses_list.append(d[course_entry]) #prob redundant
+            #courses_list.append(d[course_entry]) #prob redundant
+            college_table_info = WrapperClassCourse( d[course_entry] , transferring  )
+            courses_list.append(college_table_info)
         d.close()
-        return courses_list
+
+    return courses_list
+
+    
+
+    
     
     
     #find database to open
     #print out each course
+
+#wrapper class for combining everything together... TODO unify all parts of my program into one universal class object and database...
+
+class WrapperClassCourse(Course):
+
+    def __init__(self, dual_college_course, transferring_college):
+        super().__init__(dual_college_course.title, dual_college_course.ID, dual_college_course.name, dual_college_course.ps_course, dual_college_course.college_course_name)
+        #this will have the AP equivalency, course equalency, and prerequistes and description in addition to all of this
+        self.AP_equals = ""
+        #self. description = description
+        self.checkboxID = session["course_id"]
+        session["course_id"] += 1
+
+
+        #for credit in AP_credit():
+            #self.AP_equals += credit
+        ap_credits_gained = AP_credit()
+        if self.ps_course in ap_credits_gained:
+            #self.AP_equals = ap_credits_gained[ap_credits_gained.index(self.ps_course)]
+            self.AP_equals = "Yes"
+
+        #get prereqs
+        self. dual_course_prereq = "" 
+
+        college_selected = session['college']
+        course_con = sqlite3.connect("scrapers/" + databases[college_selected])
+        cur = course_con.cursor()
+
+        t = ( self.ps_course,)
+        for prereq_desc in cur.execute(''' SELECT prereqs FROM courses WHERE name LIKE ? ''', t):
+            self.dual_course_prereq = prereq_desc[0]
+        course_con.close()
+            
+        #set course equal
+        self.course_equal = ""
+
+        #TODO make this better
+        if transferring_college == "Georgia Tech":
+            p = sqlite3.connect("scrapers/ggc_gatech_transfer.db")
+            l = p.cursor()
+            j = (self.ps_course,)
+            for transfer_credit in l.execute('''SELECT Gatech_description FROM ggc_gatech_transfer WHERE Ggc_course LIKE  ?''', j):
+                self.course_equal = transfer_credit[0]
+    
+            p.close()
+
+           
+
+        
+        
+
+
+
+    
+    
+
+
+
 
 def getTransferred(selected_college, transferring_college):
     """returns a dict of all courses that are transferable between the selected institution and transferring instiution"""
