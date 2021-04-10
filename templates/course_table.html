@@ -22,7 +22,7 @@
     }
     
     .highlighted {
-      background-color: "#68ff00";
+      background-color: #68ff00;
     }
   </style>
 </head>
@@ -46,17 +46,18 @@
   
   <form action= "/courses" method="post">
     <input type="submit" name="courses" value="Courses_List"> 
-    <input type="submit" name="majors"   value="Major_Pathway">  
-    <input type="submit" name="schedule" value="College_Course_Schedule">  
+   <!--- <input type="submit" name="majors"   value="Major_Pathway">   -->
+  <!---  <input type="submit" name="schedule" value="College_Course_Schedule">  -->
   </form>
   
   
   <table>
     <tr>
-      <th>Course Name </th>
-      <th>Course ID</th>
+      <th>Dual Enrollment Course Name </th>
+      <th>Course Description</th>
+      <th>ID </th>
       <th> AP Course Equivalent</th>
-      <th> Next Semester Availibility </th>
+     <!-- <th> Next Semester Availibility </th> -->
       <th> Prerequisites </th>
       <th> Course Transferability </th>
       <th> Add Course to Take</th>
@@ -81,6 +82,7 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"> </script>
 
+
 <script>
   var courses_stack = [];
   
@@ -91,21 +93,17 @@
     return td_name;
   };
   
-  ///set textcolor of all mentions of course if taking course
-  function update_name_texts(course_name) {
-    $('body').html(function(content) {
-      return content.replace(course_name, 'replacement');
-    });
-  };
-  
-  
+ </script>
+
+ <script src="./js/course_table.js"></script>
+
+ <script>
   
   //TODO make this more efficient than just recreating the table
   function update_takecourses_table() {
     $('#coursestaken').find("tr:gt(0)").empty();
     for (course_name in courses_stack) {
       $('#coursestaken tr:last').after(  "<tr> <td>" + courses_stack[course_name] + "</td> <tr/>")};
-        update_name_texts(courses_stack[course_name] );
       }
       
       
@@ -129,6 +127,8 @@
               update_takecourses_table();
             };
           };
+
+          updateHighlights();
         });
       });
       
@@ -136,6 +136,6 @@
       
       
     </script>
-    
-    </html>
-    
+  </body>
+  </html>
+  

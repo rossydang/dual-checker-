@@ -39,6 +39,9 @@ def start():
     return render_template("start.html")
 #optionally ask for major
 
+@app.route('/js/<path:path>')
+def send_js(path):
+    return flask.send_from_directory('templates/js', path)
 
 def AP_credit():
     #returns list of courses that user has  gotten credit through exams
@@ -117,7 +120,7 @@ def getCourses(college, transferring): #replace this using each name as an ident
     #returns a dict of all classes EX:
     courses_list = []
     if college == "Georgia Gwinnett College":
-        d = shelve.open("scrapers/Georgia_Gwinnett_college")
+        d = shelve.open("scrapers/Georgia_Gwinnett_college", "r")
         for course_entry in d:
             #courses_list.append(d[course_entry]) #prob redundant
             college_table_info = WrapperClassCourse( d[course_entry] , transferring  )
